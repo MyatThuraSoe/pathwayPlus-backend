@@ -8,9 +8,12 @@ require('dotenv').config()
 const {Consultant, Session} = require('./models/consultationModels')
 const {Volunteer, Role, Department} = require('./models/volunteerModels')
 
+// other imports
+const utils = require('./utils')
+
 // connect Mongo
 const DB_URI = process.env.PROD_DB
-mongoose.connect(DB_URI)
+mongoose.connect(DB_URI).then(res => console.log("::: mongoDB connected"))
 
 // init app
 const app = express()
@@ -27,7 +30,6 @@ app.use(cors())
 
 
 
-
 // consultant routes
 // later refactor with express.Router()
 
@@ -35,6 +37,23 @@ app.get('/consultant/all', async (req,res)=>{
     let allConsultants = await Consultant.find()
     res.json(allConsultants)
 })
+
+app.get('/consultant/paginate', async (req,res)=>{
+    let {page=1, limit=10} = req.query
+    let results = await utils.paginate(Consultant, parseInt(page), parseInt(limit))
+
+    res.json(results)
+})
+
+app.get('/consultant/filter', async(req,res)=>{
+    let {name, country} = req.query
+    let queryObj = {name: { $regex: name, $options: "i"}}
+    if (country) queryObj["country"]={ $regex: country, $options: "i"};
+    console.log(queryObj)
+    let results = await Consultant.find(queryObj).exec()
+    res.json(results)
+})
+
 
 app.get('/consultant/:id', async (req,res)=>{
     let consultantDetails;
