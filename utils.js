@@ -1,13 +1,28 @@
-async function paginate(model, page, limit){
-    try {
-        let docs = await model.find().limit(limit * 1).skip((page - 1) * limit);
-        let count = await model.countDocuments();
+async function paginate_filter(model, detailObj){
+    let {page, limit, name, country} = detailObj
 
-        return {
-            data: docs,
-            totalPages: Math.ceil(count / limit),
-            currentPage: page
+    let queryObj = {}
+    if(name) queryObj["name"]={ $regex: name, $options: "i"}
+    if(country) queryObj["country"]={ $regex: country, $options: "i"}
+
+    let resultData = {}
+
+    try {
+        let filterPromise = model.find(queryObj)
+        let x = await model.find(queryObj);
+        let count = x.length
+
+        if (page || limit){
+            filterPromise = filterPromise.limit(limit * 1).skip((page - 1) * limit)
+            resultData["totalPages"] = Math.ceil(count / limit)
+            resultData["currentPage"] = page
         }
+        let docs = await filterPromise.exec();
+        
+
+        resultData["data"] = docs
+
+        return resultData
     } catch (err) {
         console.log(err.message)
         return null
@@ -16,5 +31,5 @@ async function paginate(model, page, limit){
    
 
 module.exports = {
-    paginate
+    paginate_filter
 }
