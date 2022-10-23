@@ -1,4 +1,4 @@
-async function paginate_filter(model, detailObj){
+async function consultant_filter(model, detailObj){
     let {page, limit, name, country} = detailObj
 
     let queryObj = {}
@@ -28,8 +28,14 @@ async function paginate_filter(model, detailObj){
         return null
     }
 }
+
+async function paginate(query, page, limit){
+    let docs = query.limit(limit * 1).skip((page - 1) * limit)
+    return 
+}
    
 
 module.exports = {
-    paginate_filter
+    consultant_filter,
+    paginate
 }

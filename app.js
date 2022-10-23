@@ -3,10 +3,14 @@ const express = require("express")
 const mongoose = require("mongoose")
 const cors = require("cors")
 require('dotenv').config()
+const jwt = require("jsonwebtoken")
+const coki = require('cookie-parser');
 
 // model imports
 const {Consultant, Session} = require('./models/consultationModels')
 const {Volunteer, Role, Department} = require('./models/volunteerModels')
+const {Blog} = require('./models/miscModels')
+const {User} = require('./models/userModels')
 
 // other imports
 const utils = require('./utils')
@@ -24,8 +28,10 @@ app.listen(3000, ()=>{
 // middlewares
 app.use(express.json())
 app.use(cors())
+app.use(coki());
 
 
+const SECRET = "pathway-plus-2022"
 
 
 
@@ -41,7 +47,7 @@ app.get('/consultant/all', async (req,res)=>{
     if (!page && !limit && !name && !country){
         results = await Consultant.find()
     }else{
-        results = await utils.paginate_filter(Consultant, {page:parseInt(page),limit:parseInt(limit),name,country})
+        results = await utils.consultant_filter(Consultant, {page:parseInt(page),limit:parseInt(limit),name,country})
     
         if (!results){
             results = await Consultant.find()
@@ -120,6 +126,15 @@ app.delete('/consultant/delete/:id', async (req,res)=>{
 
 
 
+
+
+
+
+
+
+
+
+
 // session routes
 // later refactor with express.Router()
 
@@ -145,6 +160,8 @@ app.delete('/session/delete/:id', async (req,res)=>{
     let deletedSession = await Session.deleteOne({_id:req.params.id})
     res.json(deletedSession)
 })
+
+
 
 
 
@@ -200,3 +217,156 @@ app.delete('/volunteer/delete/:id', async (req,res)=>{
     let deletedVol = await Volunteer.deleteOne({_id:req.params.id})
     res.json(deletedVol)
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// blog routes
+// later refactor
+
+app.get('/blog/all', async (req, res) => {
+    let allBlogs = await Blog.find()
+    res.json(allBlogs)
+})
+
+app.get('/blog/:id', async (req,res)=>{
+    let blogDetails;
+    try{
+        blogDetails = await Blog.where("_id").equals(req.params.id)
+    } catch(err) {
+        blogDetails = null
+        res.status(404)
+    }
+    res.json(blogDetails)
+})
+
+// sample reqest body
+// {
+//     "cover" : "https://profile.com/x.png",
+//     "title" : "Some Title.",
+//     "body" : "Lorem ipsum sed ikip,,,,",
+//     "categories" : ["IT", "Art", "Business"],
+// }
+app.post('/blog/create', async (req,res)=>{
+    let createdBlog = await Blog.create(req.body)
+    res.json(createdBlog)
+})
+app.delete('/blog/delete/:id', async (req,res)=>{
+    let deletedBlog = await Blog.deleteOne({_id:req.params.id})
+    res.json(deletedBlog)
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+// user routes
+app.get('/user/all', async (req, res) => {
+    let allUsers = await User.find()
+    res.json(allUsers)
+})
+
+app.get('/user/:id', async (req, res) => {
+    let userDetails;
+    try{
+        userDetails = await User.where("_id").equals(req.params.id)
+    } catch(err) {
+        userDetails = null
+        res.status(404)
+    }
+    res.json(userDetails)
+})
+
+
+
+// sample reqest body
+// {
+//     "username" : "Makima",
+//     "email" : "makima@gmail.com",
+//     "profile" : "https://profile.com/q.png",
+//     "phone" : "09787955651",
+//     "dob" : "2001-01-01T17:30:00.000Z",
+//     "city" : "Arasaka",
+//     "password" : "qwerty",
+// }
+app.post("/auth/register", async (req,res) => {
+    let result;
+    let emailExist = await User.exists({ email : req.body["email"] })
+    if(emailExist){
+        result = {
+            error : "email already exists"
+        }
+    } else {
+        try {
+            let createdUser = await User.create(req.body)
+            const access_token = jwt.sign(createdUser, SECRET, {expireIn:"24h"})
+            res.cookie("jwt_access", access_token, { httpOnly: true })
+            result = createdUser
+        } catch(err) {
+            result = {
+                error : err.message
+            }
+        }
+    }
+    res.json(result)
+})
+
+// sample reqest body
+// {
+//     "email" : "makima@gmail.com",
+//     "password" : "qwerty",
+// }
+app.post("/auth/login", async (req,res)=>{
+    let result;
+    let user = await User.findOne({email:req.body["email"]})
+    if(user){
+        let psw_correct = await user.checkPassword(req.body["password"])
+        if(psw_correct){
+            const access_token = jwt.sign(user, SECRET, {expireIn:"24h"})
+            res.cookie("jwt_access", access_token, { httpOnly: true })
+            result = user
+        } else {
+            request = {
+                error : "password incorrect"
+            }
+        }
+    } else {
+        request = {
+            error : "password incorrect"
+        }
+    }
+    res.json(result)
+})
+
+
+app.get("/auth/logout", (req,res)=>{
+    res.clearCookie("jwt_access");
+    res.json({
+        message : "user logged out"
+    })
+})
+
