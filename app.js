@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken")
 const coki = require('cookie-parser');
 
 // model imports
-const {Consultant, Session} = require('./models/consultationModels')
+const {Consultant, Session, Booking} = require('./models/consultationModels')
 const {Volunteer, Role, Department} = require('./models/volunteerModels')
 const {Blog} = require('./models/miscModels')
 const {User} = require('./models/userModels')
@@ -102,6 +102,7 @@ app.get('/consultant/:id/sessions', async (req,res)=>{
 // sample reqest body
 // {
 //     "name" : "Rebecca",
+//     "email" : "rb@gmail.com",
 //     "profile" : "https://profile.com/x.png",
 //     "country" : "Japan",
 //     "university" : "Arasaka University",
@@ -113,11 +114,22 @@ app.get('/consultant/:id/sessions', async (req,res)=>{
 app.post('/consultant/create', async (req,res)=>{
     let createdConsultant = await Consultant.create(req.body)
     res.json(createdConsultant)
-})
+}) 
 
 app.delete('/consultant/delete/:id', async (req,res)=>{
     let deletedConsultant = await Consultant.deleteOne({_id:req.params.id})
     res.json(deletedConsultant)
+})
+
+app.patch('/consultant/update/:id', async (req,res)=>{
+    let updatedConsultant = await Consultant.findOne({_id:req.params.id})
+    for (const key in req.body){
+        if(key != "_id"){
+            updatedConsultant[key] = req.body[key]
+        }
+    }
+    updatedConsultant.save()
+    res.json(updatedConsultant)
 })
 
 
@@ -160,6 +172,75 @@ app.delete('/session/delete/:id', async (req,res)=>{
     let deletedSession = await Session.deleteOne({_id:req.params.id})
     res.json(deletedSession)
 })
+
+
+
+
+
+
+// Booking routes
+// later refactor
+// app.post("/booking/crate", async(req,res)=>{
+//     let result;
+//     let booking = await Booking.findOne({session:req.body["session"]})
+//     if (booking){
+//         result = {
+//             error: "already booked"
+//         }
+//     } else {
+//         let newBooking = await Booking.create(req.body)
+//         result = newBooking
+//     }
+//     res.json(result)
+
+// })
+
+app.post("/booking/crate", async(req,res)=>{
+    let result;
+    let bd = req.body
+    try{
+        let session = await Session.findOne({_id:bd.session})
+        let booking = await Booking.findOne({session:bd.session})
+        if (session.weekly){
+            if (booking){
+                bd["date"] = session["date"]
+            } else {
+                bd["date"] = session["date"]
+            }
+            let createdBooking = await Booking.create(bd)
+            result = createdBooking
+        } else {
+            if (booking) {
+                result = {error:"already booked"}
+            } else {
+                bd["date"] = session["date"]
+                let createdBooking = await Booking.create(bd)
+                result = createdBooking
+            }
+        }
+    } catch(err) {
+        result = {
+            error : "no session found"
+        }
+    }
+
+    res.json(result)
+    
+
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -313,27 +394,28 @@ app.get('/user/:id', async (req, res) => {
 //     "city" : "Arasaka",
 //     "password" : "qwerty",
 // }
-app.post("/auth/register", async (req,res) => {
-    let result;
-    let emailExist = await User.exists({ email : req.body["email"] })
-    if(emailExist){
-        result = {
-            error : "email already exists"
-        }
-    } else {
-        try {
-            let createdUser = await User.create(req.body)
-            const access_token = jwt.sign(createdUser, SECRET, {expireIn:"24h"})
-            res.cookie("jwt_access", access_token, { httpOnly: true })
-            result = createdUser
-        } catch(err) {
-            result = {
-                error : err.message
-            }
-        }
-    }
-    res.json(result)
-})
+// app.post("/auth/register", async (req,res) => {
+//     let result;
+//     let emailExist = await User.exists({ email : req.body["email"] })
+//     if(emailExist){
+//         result = {
+//             error : "email already exists"
+//         }
+//     } else {
+//         try {
+//             let createdUser = await User.create(req.body)
+//             const access_token = jwt.sign(createdUser, SECRET, {expireIn:"24h"})
+//             res.cookie("jwt_access", access_token, { httpOnly: true })
+//             result = createdUser
+//         } catch(err) {
+//             result = {
+//                 error : err.message
+//             }
+//         }
+//     }
+//     res.json(result)
+// })
+
 
 // sample reqest body
 // {
