@@ -35,6 +35,11 @@ const SECRET = "pathway-plus-2022"
 
 
 
+// custom middlewares
+
+
+
+
 
 // consultant routes
 // later refactor with express.Router()
@@ -195,28 +200,18 @@ app.delete('/session/delete/:id', async (req,res)=>{
 
 // })
 
-app.post("/booking/crate", async(req,res)=>{
+app.post("/booking/create", async(req,res)=>{
     let result;
     let bd = req.body
     try{
         let session = await Session.findOne({_id:bd.session})
         let booking = await Booking.findOne({session:bd.session})
-        if (session.weekly){
-            if (booking){
-                bd["date"] = session["date"]
-            } else {
-                bd["date"] = session["date"]
-            }
+        if (booking) {
+            result = {error:"already booked"}
+        } else {
+            bd["date"] = session["date"]
             let createdBooking = await Booking.create(bd)
             result = createdBooking
-        } else {
-            if (booking) {
-                result = {error:"already booked"}
-            } else {
-                bd["date"] = session["date"]
-                let createdBooking = await Booking.create(bd)
-                result = createdBooking
-            }
         }
     } catch(err) {
         result = {
@@ -225,10 +220,12 @@ app.post("/booking/crate", async(req,res)=>{
     }
 
     res.json(result)
-    
-
 })
 
+app.delete('/booking/delete/:id', async (req,res)=>{
+    let deletedBooking = await Booking.deleteOne({_id:req.params.id})
+    res.json(deletedBooking)
+})
 
 
 
@@ -386,35 +383,30 @@ app.get('/user/:id', async (req, res) => {
 
 // sample reqest body
 // {
-//     "username" : "Makima",
 //     "email" : "makima@gmail.com",
-//     "profile" : "https://profile.com/q.png",
-//     "phone" : "09787955651",
-//     "dob" : "2001-01-01T17:30:00.000Z",
-//     "city" : "Arasaka",
 //     "password" : "qwerty",
 // }
-// app.post("/auth/register", async (req,res) => {
-//     let result;
-//     let emailExist = await User.exists({ email : req.body["email"] })
-//     if(emailExist){
-//         result = {
-//             error : "email already exists"
-//         }
-//     } else {
-//         try {
-//             let createdUser = await User.create(req.body)
-//             const access_token = jwt.sign(createdUser, SECRET, {expireIn:"24h"})
-//             res.cookie("jwt_access", access_token, { httpOnly: true })
-//             result = createdUser
-//         } catch(err) {
-//             result = {
-//                 error : err.message
-//             }
-//         }
-//     }
-//     res.json(result)
-// })
+app.post("/auth/register", async (req,res) => {
+    let result;
+    let emailExist = await User.exists({ email : req.body["email"] })
+    if(emailExist){
+        result = {
+            error : "email already exists"
+        }
+    } else {
+        try {
+            let createdUser = await User.create(req.body)
+            const access_token = jwt.sign(createdUser, SECRET, {expireIn:"24h"})
+            res.cookie("jwt_access", access_token, { httpOnly: true })
+            result = createdUser
+        } catch(err) {
+            result = {
+                error : err.message
+            }
+        }
+    }
+    res.json(result)
+})
 
 
 // sample reqest body
@@ -438,7 +430,7 @@ app.post("/auth/login", async (req,res)=>{
         }
     } else {
         request = {
-            error : "password incorrect"
+            error : "user not found"
         }
     }
     res.json(result)
