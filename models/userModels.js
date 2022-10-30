@@ -12,15 +12,15 @@ const userSchema = mongoose.Schema({
         required: true
     },
 })
-userSchema.pre("saves", async function(next){
-    if(!this.password){
+userSchema.pre("save", async function(next){
+    // if(!this.password){
         const salt = await bcrypt.genSalt()
         this.password = await bcrypt.hash(this.password, salt)
-    }
+    // }
     next()
 })
-userSchema.statics.checkPassword = async function(psw){
-    return await bscript.compare(this.password, psw)
+userSchema.methods.checkPassword = async function(psw){
+    return await bcrypt.compare(psw, this.password)
 }
 
 
