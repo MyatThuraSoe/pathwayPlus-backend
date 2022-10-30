@@ -200,6 +200,15 @@ app.delete('/session/delete/:id', async (req,res)=>{
 
 // })
 
+// sample request
+// {
+// "name": "Yosemite",
+// "email": "0.yose@gmail.com",
+// "session": "634c324b9711b485550bf12c",
+// "facebook_acc": "facebook.com/yosemite",
+// "message": "some boring ..."
+// }
+
 app.post("/booking/create", async(req,res)=>{
     let result;
     let bd = req.body
@@ -338,7 +347,7 @@ app.get('/blog/:id', async (req,res)=>{
 // {
 //     "cover" : "https://profile.com/x.png",
 //     "title" : "Some Title.",
-//     "body" : "Lorem ipsum sed ikip,,,,",
+//     "body" : "Lorem ipsum sed ikip.....",
 //     "categories" : ["IT", "Art", "Business"],
 // }
 app.post('/blog/create', async (req,res)=>{
@@ -396,7 +405,8 @@ app.post("/auth/register", async (req,res) => {
     } else {
         try {
             let createdUser = await User.create(req.body)
-            const access_token = jwt.sign(createdUser, SECRET, {expireIn:"24h"})
+            console.log(createdUser)
+            const access_token = jwt.sign({createdUser}, SECRET, {expiresIn:"24h"})
             res.cookie("jwt_access", access_token, { httpOnly: true })
             result = createdUser
         } catch(err) {
@@ -419,17 +429,18 @@ app.post("/auth/login", async (req,res)=>{
     let user = await User.findOne({email:req.body["email"]})
     if(user){
         let psw_correct = await user.checkPassword(req.body["password"])
+        console.log(psw_correct)
         if(psw_correct){
-            const access_token = jwt.sign(user, SECRET, {expireIn:"24h"})
+            const access_token = jwt.sign({user}, SECRET, {expiresIn:"24h"})
             res.cookie("jwt_access", access_token, { httpOnly: true })
             result = user
         } else {
-            request = {
+            result = {
                 error : "password incorrect"
             }
         }
     } else {
-        request = {
+        result = {
             error : "user not found"
         }
     }
