@@ -3,10 +3,14 @@ const express = require("express")
 const mongoose = require("mongoose")
 const cors = require("cors")
 require('dotenv').config()
+const jwt = require("jsonwebtoken")
+const coki = require('cookie-parser');
 
 // model imports
-const {Consultant, Session} = require('./models/consultationModels')
+const {Consultant, Session, Booking} = require('./models/consultationModels')
 const {Volunteer, Role, Department} = require('./models/volunteerModels')
+const {Blog} = require('./models/miscModels')
+const {User} = require('./models/userModels')
 
 // other imports
 const utils = require('./utils')
@@ -24,7 +28,14 @@ app.listen(3000, ()=>{
 // middlewares
 app.use(express.json())
 app.use(cors())
+app.use(coki());
 
+
+const SECRET = "pathway-plus-2022"
+
+
+
+// custom middlewares
 
 
 
@@ -34,25 +45,38 @@ app.use(cors())
 // later refactor with express.Router()
 
 app.get('/consultant/all', async (req,res)=>{
-    let allConsultants = await Consultant.find()
-    res.json(allConsultants)
-})
+    let {page, limit, name, country} = req.query
 
-app.get('/consultant/paginate', async (req,res)=>{
-    let {page=1, limit=10} = req.query
-    let results = await utils.paginate(Consultant, parseInt(page), parseInt(limit))
+    let results;
+
+    if (!page && !limit && !name && !country){
+        results = await Consultant.find()
+    }else{
+        results = await utils.consultant_filter(Consultant, {page:parseInt(page),limit:parseInt(limit),name,country})
+    
+        if (!results){
+            results = await Consultant.find()
+        }
+    }
 
     res.json(results)
 })
 
-app.get('/consultant/filter', async(req,res)=>{
-    let {name, country} = req.query
-    let queryObj = {name: { $regex: name, $options: "i"}}
-    if (country) queryObj["country"]={ $regex: country, $options: "i"};
-    console.log(queryObj)
-    let results = await Consultant.find(queryObj).exec()
-    res.json(results)
-})
+// app.get('/consultant/paginate', async (req,res)=>{
+//     let {page=1, limit=10} = req.query
+//     let results = await utils.paginate_filter(Consultant, parseInt(page), parseInt(limit))
+
+//     res.json(results)
+// })
+
+// app.get('/consultant/filter', async(req,res)=>{
+//     let {name, country} = req.query
+//     let queryObj = {name: { $regex: name, $options: "i"}}
+//     if (country) queryObj["country"]={ $regex: country, $options: "i"};
+//     console.log(queryObj)
+//     let results = await Consultant.find(queryObj).exec()
+//     res.json(results)
+// })
 
 
 app.get('/consultant/:id', async (req,res)=>{
@@ -83,6 +107,7 @@ app.get('/consultant/:id/sessions', async (req,res)=>{
 // sample reqest body
 // {
 //     "name" : "Rebecca",
+//     "email" : "rb@gmail.com",
 //     "profile" : "https://profile.com/x.png",
 //     "country" : "Japan",
 //     "university" : "Arasaka University",
@@ -94,12 +119,32 @@ app.get('/consultant/:id/sessions', async (req,res)=>{
 app.post('/consultant/create', async (req,res)=>{
     let createdConsultant = await Consultant.create(req.body)
     res.json(createdConsultant)
-})
+}) 
 
 app.delete('/consultant/delete/:id', async (req,res)=>{
     let deletedConsultant = await Consultant.deleteOne({_id:req.params.id})
     res.json(deletedConsultant)
 })
+
+app.patch('/consultant/update/:id', async (req,res)=>{
+    let updatedConsultant = await Consultant.findOne({_id:req.params.id})
+    for (const key in req.body){
+        if(key != "_id"){
+            updatedConsultant[key] = req.body[key]
+        }
+    }
+    updatedConsultant.save()
+    res.json(updatedConsultant)
+})
+
+
+
+
+
+
+
+
+
 
 
 
@@ -132,6 +177,69 @@ app.delete('/session/delete/:id', async (req,res)=>{
     let deletedSession = await Session.deleteOne({_id:req.params.id})
     res.json(deletedSession)
 })
+
+
+
+
+
+
+// Booking routes
+// later refactor
+// app.post("/booking/crate", async(req,res)=>{
+//     let result;
+//     let booking = await Booking.findOne({session:req.body["session"]})
+//     if (booking){
+//         result = {
+//             error: "already booked"
+//         }
+//     } else {
+//         let newBooking = await Booking.create(req.body)
+//         result = newBooking
+//     }
+//     res.json(result)
+
+// })
+
+app.post("/booking/create", async(req,res)=>{
+    let result;
+    let bd = req.body
+    try{
+        let session = await Session.findOne({_id:bd.session})
+        let booking = await Booking.findOne({session:bd.session})
+        if (booking) {
+            result = {error:"already booked"}
+        } else {
+            bd["date"] = session["date"]
+            let createdBooking = await Booking.create(bd)
+            result = createdBooking
+        }
+    } catch(err) {
+        result = {
+            error : "no session found"
+        }
+    }
+
+    res.json(result)
+})
+
+app.delete('/booking/delete/:id', async (req,res)=>{
+    let deletedBooking = await Booking.deleteOne({_id:req.params.id})
+    res.json(deletedBooking)
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -187,3 +295,152 @@ app.delete('/volunteer/delete/:id', async (req,res)=>{
     let deletedVol = await Volunteer.deleteOne({_id:req.params.id})
     res.json(deletedVol)
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// blog routes
+// later refactor
+
+app.get('/blog/all', async (req, res) => {
+    let allBlogs = await Blog.find()
+    res.json(allBlogs)
+})
+
+app.get('/blog/:id', async (req,res)=>{
+    let blogDetails;
+    try{
+        blogDetails = await Blog.where("_id").equals(req.params.id)
+    } catch(err) {
+        blogDetails = null
+        res.status(404)
+    }
+    res.json(blogDetails)
+})
+
+// sample reqest body
+// {
+//     "cover" : "https://profile.com/x.png",
+//     "title" : "Some Title.",
+//     "body" : "Lorem ipsum sed ikip,,,,",
+//     "categories" : ["IT", "Art", "Business"],
+// }
+app.post('/blog/create', async (req,res)=>{
+    let createdBlog = await Blog.create(req.body)
+    res.json(createdBlog)
+})
+app.delete('/blog/delete/:id', async (req,res)=>{
+    let deletedBlog = await Blog.deleteOne({_id:req.params.id})
+    res.json(deletedBlog)
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+// user routes
+app.get('/user/all', async (req, res) => {
+    let allUsers = await User.find()
+    res.json(allUsers)
+})
+
+app.get('/user/:id', async (req, res) => {
+    let userDetails;
+    try{
+        userDetails = await User.where("_id").equals(req.params.id)
+    } catch(err) {
+        userDetails = null
+        res.status(404)
+    }
+    res.json(userDetails)
+})
+
+
+
+// sample reqest body
+// {
+//     "email" : "makima@gmail.com",
+//     "password" : "qwerty",
+// }
+app.post("/auth/register", async (req,res) => {
+    let result;
+    let emailExist = await User.exists({ email : req.body["email"] })
+    if(emailExist){
+        result = {
+            error : "email already exists"
+        }
+    } else {
+        try {
+            let createdUser = await User.create(req.body)
+            const access_token = jwt.sign(createdUser, SECRET, {expireIn:"24h"})
+            res.cookie("jwt_access", access_token, { httpOnly: true })
+            result = createdUser
+        } catch(err) {
+            result = {
+                error : err.message
+            }
+        }
+    }
+    res.json(result)
+})
+
+
+// sample reqest body
+// {
+//     "email" : "makima@gmail.com",
+//     "password" : "qwerty",
+// }
+app.post("/auth/login", async (req,res)=>{
+    let result;
+    let user = await User.findOne({email:req.body["email"]})
+    if(user){
+        let psw_correct = await user.checkPassword(req.body["password"])
+        if(psw_correct){
+            const access_token = jwt.sign(user, SECRET, {expireIn:"24h"})
+            res.cookie("jwt_access", access_token, { httpOnly: true })
+            result = user
+        } else {
+            request = {
+                error : "password incorrect"
+            }
+        }
+    } else {
+        request = {
+            error : "user not found"
+        }
+    }
+    res.json(result)
+})
+
+
+app.get("/auth/logout", (req,res)=>{
+    res.clearCookie("jwt_access");
+    res.json({
+        message : "user logged out"
+    })
+})
+

@@ -6,6 +6,10 @@ const consultantSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    email: {
+        type: String,
+        required: true
+    },
     profile : {
         type: String
     },
@@ -47,10 +51,6 @@ const sessionSchema = mongoose.Schema({
         type: [String],
         required: true
     },
-    is_available: {
-        type: Boolean,
-        default: true
-    },
     consultant: {
         type: mongoose.SchemaTypes.ObjectId,
         ref: "consultant",
@@ -59,6 +59,36 @@ const sessionSchema = mongoose.Schema({
     weekly: {
         type: Boolean,
         default: false
+    },
+    is_available : {
+        type: Boolean,
+        default: true
+    }
+})
+
+
+const bookingSchema = mongoose.Schema({
+    name : {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    session: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "session",
+        required: true
+    },
+    date : {
+        type: Date
+    },
+    facebook_acc: {
+        type: String
+    },
+    message: {
+        type: String
     }
 })
 
@@ -66,10 +96,12 @@ const sessionSchema = mongoose.Schema({
 // models
 let Consultant = mongoose.model('consultant', consultantSchema);
 let Session = mongoose.model('session', sessionSchema);
+let Booking = mongoose.model('booking', bookingSchema);
 
 
 // exports
 module.exports = {
     Consultant, 
-    Session
+    Session,
+    Booking
 }
