@@ -4,15 +4,15 @@ const volunteerSchema = new mongoose.Schema({
     type: String,
     required: [true, "name is required for a volunteer"],
   },
-  role: {
+  position: {
     type: String,
-    required: [true, "role is required for a volunteer"],
+    required: [true, "position is required for a volunteer"],
   },
   department: {
     type: String,
     required: [true, "department is required for a volunteer"],
   },
-  startTime: {
+  startDate: {
     type: String,
     required: [true, "duration is required for a volunteer"],
   },
