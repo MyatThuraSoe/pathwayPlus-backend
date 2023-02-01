@@ -32,7 +32,7 @@ exports.sendResetCode = (reciveremail, code) => {
       });
       let htmlstr;
       ejs.renderFile(
-        "./views" + "/email.ejs",
+        "./views" + "/resetPassword.ejs",
         {
           email: reciveremail,
           code: code,
