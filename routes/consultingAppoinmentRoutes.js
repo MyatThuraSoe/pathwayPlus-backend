@@ -86,11 +86,17 @@ router.get("/:id", async (req, res) => {
     if (!consultingAppointment) {
       return res.status(404).send("Consulting appointment not found");
     }
-    consultingAppointment = {
-      ...consultingAppointment,
-      consultantname: consultingsession.consultant.name,
+    if (!consultingAppointment.consultingsession) {
+      return res.status(404).send("Consultingsession does not exist.");
+    }
+    if (!consultingAppointment.consultingsession.consultant) {
+      return res.status(404).send("Consultant does not exist.");
+    }
+    consultingAppointmentWithConsultantName = {
+      ...consultingAppointment.toObject(),
+      consultantname: consultingAppointment.consultingsession.consultant.name,
     };
-    res.json(consultingAppointment);
+    res.json(consultingAppointmentWithConsultantName);
   } catch (error) {
     res.status(500).send(error);
   }

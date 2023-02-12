@@ -62,7 +62,18 @@ router.get("/:id", async (req, res) => {
     if (!proofreadingAppointment) {
       return res.status(404).send("Proofreading appointment not found");
     }
-    res.send(proofreadingAppointment);
+    if (!proofreadingAppointment.proofreadingsession) {
+      return res.status(404).send("Proofreadingsession does not exist.");
+    }
+    if (!proofreadingAppointment.proofreadingsession.proofreader) {
+      return res.status(404).send("Proofreadingsession does not exist.");
+    }
+    proofreadingAppointmentWithProofReaderName = {
+      ...proofreadingAppointment.toObject(),
+      proofreaderName:
+        proofreadingAppointment.proofreadingsession.proofreader.name,
+    };
+    res.send(proofreadingAppointmentWithProofReaderName);
   } catch (error) {
     res.status(500).send(error);
   }

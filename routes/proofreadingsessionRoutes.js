@@ -28,7 +28,7 @@ router.get("/all", async (req, res) => {
     const sessions = await ProofreadingSession.find();
     const total = await ProofreadingSession.count({});
     res.send({
-      proofreadingSession: proofreadingSession,
+      proofreadingSession: sessions,
       total: total,
     });
   } catch (error) {
@@ -84,7 +84,7 @@ router.get("/:id", async (req, res) => {
 
 // get sessions of a proofreader
 router.get("/sessionsofproofreader/:proofreaderid", (req, res) => {
-  const consultantId = req.params.proofreaderid;
+  const proofreaderid = req.params.proofreaderid;
   ProofreadingSession.find({ proofreader: proofreaderid })
     .then((sessions) => {
       res.json(sessions);
