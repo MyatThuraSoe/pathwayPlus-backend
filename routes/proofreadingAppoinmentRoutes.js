@@ -26,27 +26,6 @@ router.post("/create", checkAuth, async (req, res) => {
   }
 });
 
-// Get a specific proofreading appointment
-router.get("/:id", async (req, res) => {
-  try {
-    const proofreadingAppointment = await ProofreadingAppointment.findById(
-      req.params.id
-    ).populate({
-      path: "proofreadingsession",
-      populate: {
-        path: "proofreader",
-        select: "name _id",
-      },
-    });
-    if (!proofreadingAppointment) {
-      return res.status(404).send("Proofreading appointment not found");
-    }
-    res.send(proofreadingAppointment);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
-
 // Get all proofreading appointments
 router.get("/all", async (req, res) => {
   try {
@@ -63,6 +42,27 @@ router.get("/all", async (req, res) => {
       proofreadingAppointments: proofreadingAppointments,
       total: total,
     });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+// Get a specific proofreading appointment
+router.get("/:id", async (req, res) => {
+  try {
+    const proofreadingAppointment = await ProofreadingAppointment.findById(
+      req.params.id
+    ).populate({
+      path: "proofreadingsession",
+      populate: {
+        path: "proofreader",
+        select: "name _id",
+      },
+    });
+    if (!proofreadingAppointment) {
+      return res.status(404).send("Proofreading appointment not found");
+    }
+    res.send(proofreadingAppointment);
   } catch (error) {
     res.status(500).send(error);
   }

@@ -26,6 +26,24 @@ router.post("/create", checkAuth, async (req, res) => {
   }
 });
 
+//get all consulting appoinments
+router.get("/all", async (req, res) => {
+  try {
+    const consultingAppointments = await ConsultingAppointment.find().populate({
+      path: "consultingsession",
+      populate: {
+        path: "consultant",
+        select: "name _id",
+      },
+    });
+
+    const total = await ConsultingAppointment.count({});
+    res.json({ consultingAppointments: consultingAppointments, total: total });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
 // get single consulting appoinment
 // here is response object
 // {
@@ -73,22 +91,6 @@ router.get("/:id", async (req, res) => {
       consultantname: consultingsession.consultant.name,
     };
     res.json(consultingAppointment);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
-// get all consulting appoinments
-router.get("/all", async (req, res) => {
-  try {
-    const consultingAppointments = await ConsultingAppointment.find().populate({
-      path: "consultingsession",
-      populate: {
-        path: "consultant",
-        select: "name _id",
-      },
-    });
-    const total = await ConsultingAppointment.count({});
-    res.json({ consultingAppointments: consultingAppointments, total: total });
   } catch (error) {
     res.status(500).send(error);
   }
