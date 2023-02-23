@@ -82,9 +82,12 @@ router.get("/:id", async (req, res) => {
 router.get("/page/:pagenumber", async (req, res) => {
   try {
     const pageNumber = parseInt(req.params.pagenumber);
-    const limit = 10;
+    const limit = Number(req.query.limit) || 10;
 
     const total = await ProofreadingAppointment.count({});
+    if (total <= 0) {
+      res.status(404).send("No appointment was found, please create one!");
+    }
     const totalPages = Math.ceil(total / limit);
     if (pageNumber < 1) {
       pageNumber = 1;
