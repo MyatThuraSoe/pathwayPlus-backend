@@ -26,9 +26,11 @@ const getAllVolunteer = async (req, res) => {
 const getVolunteerList = async (req, res) => {
   try {
     const pageNumber = parseInt(req.params.pagenumber);
-    const limit = 10;
-
+    const limit = Number(req.query.limit) || 10;
     const total = await Volunteer.count({});
+    if (total <= 0) {
+      res.status(404).send("No volunteer was found, please create one!");
+    }
     const totalPages = Math.ceil(total / limit);
     if (pageNumber < 1) {
       pageNumber = 1;
