@@ -26,7 +26,7 @@ router.post("/register", async (req, res) => {
         process.env.JWT_SECRET,
         { expiresIn: "30 days" }
       );
-      res.cookie("jwt_access", access_token, { httpOnly: true });
+      res.cookie("jwt_access", access_token);
       result = createdUser;
     } catch (err) {
       result = {
@@ -47,7 +47,7 @@ router.post("/login", async (req, res) => {
       const access_token = jwt.sign({ user }, process.env.JWT_SECRET, {
         expiresIn: "24h",
       });
-      res.cookie("jwt_access", access_token, { httpOnly: true });
+      res.cookie("jwt_access", access_token);
       result = user;
     } else {
       result = {
