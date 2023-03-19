@@ -26,8 +26,11 @@ router.post("/register", async (req, res) => {
         process.env.JWT_SECRET,
         { expiresIn: "30 days" }
       );
-      res.cookie("jwt_access", access_token);
-      result = createdUser;
+      res.cookie("jwt_access", access_token, {
+        domain: ".vercel.app",
+        httpOnly: false,
+      });
+      result = { ...createdUser.toObject(), access_token };
     } catch (err) {
       result = {
         error: err.message,
@@ -47,8 +50,11 @@ router.post("/login", async (req, res) => {
       const access_token = jwt.sign({ user }, process.env.JWT_SECRET, {
         expiresIn: "24h",
       });
-      res.cookie("jwt_access", access_token);
-      result = user;
+      res.cookie("jwt_access", access_token, {
+        domain: ".vercel.app",
+        httpOnly: false,
+      });
+      result = { ...user.toObject(), access_token };
     } else {
       result = {
         error: "password incorrect",
