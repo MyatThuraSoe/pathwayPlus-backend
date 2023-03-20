@@ -26,8 +26,16 @@ router.post("/register", async (req, res) => {
         process.env.JWT_SECRET,
         { expiresIn: "30 days" }
       );
+
+      //for production
       res.cookie("jwt_access", access_token, {
         domain: ".vercel.app",
+        httpOnly: false,
+      });
+
+      //for testing purpose
+      res.cookie("jwt_access", access_token, {
+        domain: "localhost",
         httpOnly: false,
       });
       result = { ...createdUser.toObject(), access_token };
@@ -50,8 +58,16 @@ router.post("/login", async (req, res) => {
       const access_token = jwt.sign({ user }, process.env.JWT_SECRET, {
         expiresIn: "24h",
       });
+
+      //for product
       res.cookie("jwt_access", access_token, {
         domain: ".vercel.app",
+        httpOnly: false,
+      });
+
+      //for testing purpose
+      res.cookie("jwt_access", access_token, {
+        domain: "localhost",
         httpOnly: false,
       });
       result = { ...user.toObject(), access_token };
