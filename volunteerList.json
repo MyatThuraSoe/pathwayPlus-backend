@@ -299,5 +299,21 @@
     "department": "Office of Information Technology",
     "startDate": "1-Oct-2022",
     "duration": "37"
+  },
+  {
+    "id": "0142",
+    "name": "Myat Thura Soe",
+    "position": "Web Developer",
+    "department": "Office of Information Technology",
+    "startDate": "1-Jan-2023",
+    "duration": "120"
+  },
+  {
+    "id": "0143",
+    "name": "Aung Thiha Htun",
+    "position": "Web Developer",
+    "department": "Office of Information Technology",
+    "startDate": "1-Jan-2023",
+    "duration": "120"
   }
 ]
