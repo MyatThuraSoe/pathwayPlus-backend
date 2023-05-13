@@ -1,0 +1,303 @@
+[
+  {
+    "id": "0002",
+    "name": "Kaung Zayar Min",
+    "position": "President",
+    "department": "Management",
+    "startDate": "1-Nov-2020",
+    "duration": "736"
+  },
+  {
+    "id": "0002",
+    "name": "Kaung Zayar Min",
+    "role": {
+      "$oid": "63c94bf487aab463dbc7a639"
+    },
+    "department": {
+      "$oid": "63c9451e87aab463dbc7a631"
+    },
+    "startDate": "1-Nov-2020",
+    "duration": "736"
+  },
+  {
+    "id": "0003",
+    "name": "Khant Min Naing",
+    "position": "Senior Advisor",
+    "department": "Advisory",
+    "startDate": "1-Nov-2020",
+    "duration": "736"
+  },
+  {
+    "id": "0004",
+    "name": "Su Myat Oo",
+    "position": "Senior Advisor",
+    "department": "Advisory",
+    "startDate": "1-Nov-2020",
+    "duration": "736"
+  },
+  {
+    "id": "0043",
+    "name": "Zun Poe Waddy",
+    "position": "Senior Advisor",
+    "department": "Advisory",
+    "startDate": "1-Jul-2021",
+    "duration": "494"
+  },
+  {
+    "id": "0044",
+    "name": "Hnin Su Wai Khin",
+    "position": "Senior Advisor",
+    "department": "Advisory",
+    "startDate": "1-Jul-2021",
+    "duration": "494"
+  },
+  {
+    "id": "0070",
+    "name": "ThuKha",
+    "position": "Graphic Designer",
+    "department": "Office of Creative",
+    "startDate": "1-Jul-2021",
+    "duration": "494"
+  },
+  {
+    "id": "0078",
+    "name": "Htet Myet Naing Win",
+    "position": "Consultant",
+    "department": "Office of Programme Providers",
+    "startDate": "1-Oct-2021",
+    "duration": "402"
+  },
+  {
+    "id": "0079",
+    "name": "Kaung San Nyi",
+    "position": "Consultant",
+    "department": "Office of Programme Providers",
+    "startDate": "1-Oct-2021",
+    "duration": "402"
+  },
+  {
+    "id": "0080",
+    "name": "Nang Sayoon Noi",
+    "position": "Consultant",
+    "department": "Office of Programme Providers",
+    "startDate": "1-Dec-2021",
+    "duration": "341"
+  },
+  {
+    "id": "0081",
+    "name": "Thinzar Aung",
+    "position": "Consultant",
+    "department": "Office of Programme Providers",
+    "startDate": "1-Dec-2021",
+    "duration": "341"
+  },
+  {
+    "id": "0083",
+    "name": "Thet Mon Thet",
+    "position": "Secretary",
+    "department": "Advisory",
+    "startDate": "1-Jan-2022",
+    "duration": "310"
+  },
+  {
+    "id": "0086",
+    "name": "Nay Zin Min Shwe",
+    "position": "HR Officer",
+    "department": "Office of Human Resources",
+    "startDate": "1-Jan-2022",
+    "duration": "310"
+  },
+  {
+    "id": "0112",
+    "name": "Nyan Lin Kyaw",
+    "position": "Consultant",
+    "department": "Office of Programme Providers",
+    "startDate": "1-Apr-2022",
+    "duration": "220"
+  },
+  {
+    "id": "0113",
+    "name": "Zarli Htet",
+    "position": "Programme Coordinator",
+    "department": "Office of PR & Coordination",
+    "startDate": "1-Apr-2022",
+    "duration": "220"
+  },
+  {
+    "id": "0117",
+    "name": "Swe Zin Hlaing",
+    "position": "Graphic Designer",
+    "department": "Office of Creative",
+    "startDate": "28-May-2022",
+    "duration": "163"
+  },
+  {
+    "id": "0118",
+    "name": "Thu Wai Zin",
+    "position": "Graphic Designer",
+    "department": "Office of Creative",
+    "startDate": "28-May-2022",
+    "duration": "163"
+  },
+  {
+    "id": "0122",
+    "name": "Yadanar Lin",
+    "position": "Wed Development Team Leader",
+    "department": "Office of Information Technology",
+    "startDate": "18-Jun-2022",
+    "duration": "142"
+  },
+  {
+    "id": "0123",
+    "name": "Phyu Phyu Thet Zaw",
+    "position": "Programme Coordinator",
+    "department": "Office of PR & Coordination",
+    "startDate": "18-Jun-2022",
+    "duration": "142"
+  },
+  {
+    "id": "0124",
+    "name": "Thuta Ye Moe",
+    "position": "Consultant",
+    "department": "Office of Programme Providers",
+    "startDate": "25-Jun-2022",
+    "duration": "135"
+  },
+  {
+    "id": "0125",
+    "name": "Yamin Thet",
+    "position": "Consultant",
+    "department": "Office of Programme Providers",
+    "startDate": "25-Jun-2022",
+    "duration": "135"
+  },
+  {
+    "id": "0126",
+    "name": "Kay Khaing Thaw",
+    "position": "Content Writer",
+    "department": "Office of Creative",
+    "startDate": "1-Jul-2022",
+    "duration": "129"
+  },
+  {
+    "id": "0127",
+    "name": "Yadanar Pyae Sone",
+    "position": "Content Writer",
+    "department": "Office of Creative",
+    "startDate": "1-Jul-2022",
+    "duration": "129"
+  },
+  {
+    "id": "0129",
+    "name": "Shin Thant Thiri",
+    "position": "HR Officer",
+    "department": "Office of Human Resources",
+    "startDate": "1-Jul-2022",
+    "duration": "129"
+  },
+  {
+    "id": "0130",
+    "name": "Myat Hsu Paing",
+    "position": "UX/UI Designer",
+    "department": "Office of Information Technology",
+    "startDate": "16-Jul-2022",
+    "duration": "114"
+  },
+
+  {
+    "id": "0098",
+    "name": "Hnin Oo Wai",
+    "position": "Consultant",
+    "department": "Office of Programme Providers",
+    "startDate": "1-Jan-2022",
+    "duration": "310"
+  },
+  {
+    "id": "0105",
+    "name": "Yoon Htike Htike",
+    "position": "Content Writer",
+    "department": "Office of Creative",
+    "startDate": "1-Apr-2022",
+    "duration": "220"
+  },
+  {
+    "id": "0106",
+    "name": "Kyi Phyu Ko",
+    "position": "Content Writer",
+    "department": "Office of Creative",
+    "startDate": "1-Apr-2022",
+    "duration": "220"
+  },
+  {
+    "id": "0131",
+    "name": "Thuta Ye Aung",
+    "position": "Web Developer",
+    "department": "Office of Information Technology",
+    "startDate": "30-Jul-2022",
+    "duration": "100"
+  },
+  {
+    "id": "0132",
+    "name": "Sithu Soe",
+    "position": "Web Developer",
+    "department": "Office of Information Technology",
+    "startDate": "30-Jul-2022",
+    "duration": "100"
+  },
+  {
+    "id": "0133",
+    "name": "Htet Khine Linn",
+    "position": "UX/UI Designer",
+    "department": "Office of Information Technology",
+    "startDate": "13-Aug-2022",
+    "duration": "86"
+  },
+  {
+    "id": "0134",
+    "name": "Kaung Sithu",
+    "position": "UX/UI Designer",
+    "department": "Office of Information Technology",
+    "startDate": "13-Aug-2022",
+    "duration": "86"
+  },
+  {
+    "id": "0137",
+    "name": "Than Htike Zaw",
+    "position": "Web Developer",
+    "department": "Office of Information Technology",
+    "startDate": "13-Aug-2022",
+    "duration": "86"
+  },
+  {
+    "id": "0138",
+    "name": "Hnin Aye Thu Hlaing",
+    "position": "Graphic Designer",
+    "department": "Office of Creative",
+    "startDate": "10-Sep-2022",
+    "duration": "58"
+  },
+  {
+    "id": "0139",
+    "name": "Naing Htoo Aung",
+    "position": "Graphic Designer",
+    "department": "Office of Creative",
+    "startDate": "10-Sep-2022",
+    "duration": "58"
+  },
+  {
+    "id": "0140",
+    "name": "Aye Myat Thiri Mon",
+    "position": "Graphic Designer",
+    "department": "Office of Creative",
+    "startDate": "10-Sep-2022",
+    "duration": "58"
+  },
+  {
+    "id": "0141",
+    "name": "Phone Myat Kyaw",
+    "position": "Web Developer",
+    "department": "Office of Information Technology",
+    "startDate": "1-Oct-2022",
+    "duration": "37"
+  }
+]

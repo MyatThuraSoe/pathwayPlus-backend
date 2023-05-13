@@ -53,7 +53,7 @@ app.use("/volunteers", volunteerRouter);
 
 const PORT = process.env.PORT || 5050;
 
-const strater = async () => {
+const starter = async () => {
   try {
     await connectDB(process.env.MONGO_URL);
     app.listen(PORT, () => {
@@ -64,4 +64,4 @@ const strater = async () => {
   }
 };
 
-strater();
+starter();
